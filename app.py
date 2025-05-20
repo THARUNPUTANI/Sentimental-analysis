@@ -11,7 +11,7 @@ from sklearn.pipeline import Pipeline
 st.title("💬 Sentiment Analysis App")
 st.markdown("Enter a sentence and get sentiment prediction. Visualizations included!")
 
-# ---------- Sample Real-World-like Dataset ----------
+# ---------- Sample Dataset ----------
 data = {
     'text': [
         'Great quality and fast delivery!',
@@ -29,7 +29,7 @@ data = {
 }
 df = pd.DataFrame(data)
 
-# ---------- Build and Train Model ----------
+# ---------- Train Model ----------
 model = Pipeline([
     ('vectorizer', TfidfVectorizer()),
     ('classifier', MultinomialNB())
@@ -39,10 +39,10 @@ y = df['label']
 model.fit(X, y)
 
 # ---------- User Input ----------
-user_input = st.text_area("📝 Enter a review:", "")
+user_input = st.text_area("📝 Enter a review:")
 
 if st.button("📈 Predict Sentiment"):
-    if user_input.strip() == "":
+    if not user_input.strip():
         st.warning("Please enter some text to analyze.")
     else:
         prediction = model.predict([user_input])[0]
@@ -53,7 +53,7 @@ if st.button("📈 Predict Sentiment"):
 
 # ---------- Sentiment Distribution Chart ----------
 st.subheader("📊 Sentiment Distribution in Dataset")
-sentiment_counts = df['label'].value_counts().rename({0: "Negative", 1: "Positive"})
+sentiment_counts = df['label'].map({0: "Negative", 1: "Positive"}).value_counts()
 fig, ax = plt.subplots()
 sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values, palette="pastel", ax=ax)
 ax.set_ylabel("Number of Reviews")
